@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0
+    }
+
+    html,
+    body {
+        width: 100%;
+        height: 100%
+    }
+
+    .dice-container {
+        width: 100%;
+        height: 100%;
+        transform-style: preserve-3d
+    }
+
+    .dice-cube {
+        width: 100px;
+        height: 100px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate3d(-50%, -50%);
+        transform-origin: 50% 50%;
+        animation: dice-animate 5s linear infinite;
+        transform-style: preserve-3d;
+    }
+
+    @keyframes dice-animate {
+        100% {
+            transform: rotateX(360deg) rotateY(360deg)
+        }
+    }
+
+    .dice-part {
+        width: 100px;
+        height: 100px;
+        position: absolute;
+        border-radius: 20px;
+        color: aliceblue;
+        background: #000;
+        text-align: center;
+        line-height: 100px;
+
+    }
+
+    .one {
+        transform: translateZ(50px);
+    }
+
+    .two {
+        transform: rotateX(90deg) translateZ(50px);
+    }
+
+    .three {
+        transform: rotateX(180deg) translateZ(50px);
+    }
+
+    .four {
+        transform: rotateX(270deg) translateZ(50px);
+    }
+
+    .five {
+        transform: rotateY(90deg) translateZ(50px);
+    }
+
+    .six {
+        transform: rotateY(90deg) translateZ(-50px);
+    }
+
+    .black-sheld1 {
+        transform: rotateZ(90deg);
+        background: #000;
+        border-radius: 0;
+    }
+
+    .black-sheld2 {
+        transform: rotateX(90deg);
+        background: #000;
+        border-radius: 0;
+    }
+
+    .black-sheld3 {
+        background: #000;
+        border-radius: 0;
+    }
+
+    .dice-item {
+        width: 100px;
+        height: 100px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate3d(-50%, -50%);
+
+    }
+
+    .dice-animate2 {
+        animation: dice-animate2 3s linear both;
+    }
+
+    @keyframes dice-animate2 {
+        50% {
+            top: 0
+        }
+    }
+</style>
+
+<body>
+    <div class="dice-container">
+        <div class="dice-item">
+            <div class="dice-cube">
+                <div class="dice-part one">1</div>
+                <div class="dice-part two">2</div>
+                <div class="dice-part three">3</div>
+                <div class="dice-part four">4</div>
+                <div class="dice-part five">5</div>
+                <div class="dice-part six">6</div>
+                <div class="dice-part black-sheld1"></div>
+                <div class="dice-part black-sheld2"></div>
+                <div class="dice-part black-sheld3"></div>
+            </div>
+        </div>
+
+    </div>
+</body>
+<script src="http://alicdn.herdsric.com/herdsric-tool/jquery.min.js"></script>
+<script>
+    $(".dice-item").on("animationend", function () {
+        console.log("animate end")
+        $(".dice-item").removeClass("dice-animate2")
+    })
+    $("body").click(function () {
+        console.log("animate")
+        $(".dice-item").addClass("dice-animate2")
+    })
+</script>
+
+</html>

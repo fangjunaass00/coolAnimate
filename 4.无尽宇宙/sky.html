@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0
+    }
+
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .sky-filed {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        background: #000;
+        transform-style: preserve-3d;
+        perspective: 500px;
+        perspective-origin: center center;
+
+    }
+
+    .star {
+        width: 6px;
+        height: 6px;
+        background-color: transparent;
+        border-radius: 50%;
+        /*  */
+        position: absolute;
+        left: 0%;
+        top: 0%;
+        box-shadow: #FFF 15px 15px 7px
+    }
+
+    .star-animate {
+        animation: star 5s linear 1 both;
+    }
+
+    @keyframes star {
+        from {
+            opacity: 0;
+        }
+
+        30% {
+            opacity: 1;
+        }
+
+        90% {
+            opacity: 1;
+        }
+
+        to {
+            opacity: 0;
+            transform: translateZ(600px);
+        }
+    }
+</style>
+
+<body>
+    <div class="sky-filed">
+        <!-- <div class="star"></div> -->
+    </div>
+    <script src="http://alicdn.herdsric.com/herdsric-tool/jquery.min.js"></script>
+    <script>
+        var windowPara = { width: $("body").width(), height: $("body").height() };
+        function cerateStart() {
+
+            for (var i = 0; i < 40; i++) {
+                var str = $('<div class="star"></div>');
+                $(".sky-filed").append(str);
+
+                setShadow(str)
+
+                startAnimate(str)
+                str.on("animationend", endFun)
+            }
+
+            // str.css({ opacity: 0 })
+
+        }
+
+        function setShadow(item) {
+            var bgstr = ""
+            for (var i = 0; i < 30; i++) {
+                var px = parseInt(Math.random() * windowPara.width)
+                var py = parseInt(Math.random() * windowPara.height)
+                var blur = parseInt(Math.random() * 7)
+                if (i != 0) {
+                    bgstr += ","
+                }
+                bgstr += px + "px " + py + "px " + blur + "px rgb(255,255,255)";
+            }
+
+            console.log(bgstr)
+            item.css({ boxShadow: bgstr });
+
+            var delay = Math.floor(Math.random() * 50) / 10;
+            item.css({ animationDelay: delay + "s" });
+
+            var animationTime = Math.floor(Math.random() * 50) / 10;
+            item.css({ animationDuration: animationTime + "s" })
+        }
+
+
+        function startAnimate(str) {
+            str.addClass("star-animate")
+        }
+        function endFun(e) {
+            console.log(e)
+            var thisitem = $(this);
+            thisitem.removeClass("star-animate");
+            e.target.offsetWidth;
+            setShadow(thisitem);
+            thisitem.addClass("star-animate");
+
+        }
+        cerateStart()
+    </script>
+</body>
+
+</html>
