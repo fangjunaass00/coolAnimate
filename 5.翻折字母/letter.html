@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    .letter3d {
+      font-size: 158px;
+      color: orange;
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      transition: 0.5s;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+      transform-origin: 0% 50%;
+    }
+    .letter3d:hover::before {
+      transform-origin: 0% 50%;
+      transform: rotateY(-45deg);
+    }
+    .letter3d:hover::after {
+      transform-origin: 0% 50%;
+      transform: rotateY(-15deg) skewY(10deg);
+    }
+    .letter3d::before {
+      content: attr(letterValue);
+      color: #000;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: 0.5s;
+      z-index: 3;
+      transform-origin: 0% 50%;
+      transform: rotateY(-5deg);
+    }
+    .letter3d::after {
+      content: attr(letterValue);
+      color: #000;
+      opacity: 0.2;
+      filter: blur;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: 0.5s;
+      z-index: 2;
+    }
+  </style>
+  <body>
+    <div class="letter3d" letterValue="方峻">方峻</div>
+  </body>
+</html>
