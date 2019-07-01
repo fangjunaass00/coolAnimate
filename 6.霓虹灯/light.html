@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      html {
+        background: #000;
+      }
+      .light {
+        color: #fff;
+        font-size: 50px;
+        animation: light-animate 2s linear infinite;
+      }
+
+      @keyframes light-animate {
+        0% {
+          text-shadow: 0 0 8px #fff, 0 0 15px #fff, 0 0 25px #fff,
+            0 0 55px #ff0000, 0 0 35px #ff0000, 0 0 45px #ff0000;
+        }
+        100% {
+          text-shadow: 0 0 4px #fff, 0 0 7.5px #fff, 0 0 12.5px #fff,
+            0 0 27.5px #ff0000, 0 0 17.5px #ff0000, 0 0 22.5px #ff0000;
+        }
+      }
+      .switch-btn {
+        position: relative;
+        width: 200px;
+        height: 30px;
+        border-radius: 15px;
+        border: 2px solid silver;
+        background-color: grey;
+        box-shadow: 1px 1px 2px #3c3838 inset, 2px 2px 4px #3c3838 inset;
+      }
+      .switch-btn::before {
+        content: "";
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        position: absolute;
+        top: 2px;
+        left: 1%;
+        background: #fff;
+        box-shadow: 1px 1px 1px #555, 2px 2px 1px #525050, 3px 3px 1px #212020,
+          5px 5px 10px #000000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="light">方峻</div>
+    <div class="switch-btn"></div>
+  </body>
+</html>
