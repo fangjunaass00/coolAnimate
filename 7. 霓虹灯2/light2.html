@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+    .light-round {
+      width: 300px;
+      height: 150px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      border: 2px solid #fff;
+      border-top-left-radius: 513px 300px;
+      border-top-right-radius: 281px 300px;
+      border-bottom-left-radius: 42px 100px;
+      border-bottom-right-radius: 42px 100px;
+      box-shadow: 0 0 2px 4px rgba(255, 200, 200, 0.5),
+        0 0 2px 4px rgba(255, 200, 200, 0.5) inset;
+    }
+  </style>
+  <body>
+    <div class="light-round"></div>
+  </body>
+</html>
