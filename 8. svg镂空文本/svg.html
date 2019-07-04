@@ -1,0 +1,109 @@
+<!-- <!DOCTYPE html> -->
+<!-- 不知道为啥一旦写了这个，svg设置字体大小的功能就废了 -->
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+    }
+    .website {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .bg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: white;
+    }
+    .bg img {
+      min-width: 100%;
+      min-height: 100%;
+    }
+    /* .svg {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+    }
+    .mask-rect {
+      fill: rgb(240, 240, 240);
+    }
+    .mask-text {
+      font-size: 100;
+      font-weight: 900;
+      text-anchor: middle;
+      fill: red;
+    }
+    .svg-rect {
+      fill: rgb(240, 240, 240);
+      mask: url(#mask);
+    } */
+    .svg {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+    .mask-rect {
+      fill: rgb(240, 240, 240);
+    }
+    .mask-text {
+      font-size: 100;
+      font-weight: 900;
+      text-anchor: middle;
+      dominant-baseline: baseline;
+      fill: black;
+    }
+    .svg-rect {
+      fill: white;
+      mask: url(#mask);
+    }
+  </style>
+  <body>
+    <div class="website">
+      <div class="bg">
+        <img src="../image/gif1.gif" />
+      </div>
+      <svg
+        class="svg"
+        viewbox="0 0 500 300"
+        preserveAspectRatio="xMidYMid slice"
+      >
+        <defs>
+          <mask id="mask" x="0" y="0" width="100%" height="100%">
+            <rect
+              class="mask-rect"
+              x="0"
+              y="0"
+              color="ff0000"
+              width="100%"
+              height="100%"
+            ></rect>
+            <text class="mask-text" x="250" y="60%">方峻</text>
+          </mask>
+        </defs>
+        <rect class="svg-rect" x="0" y="0" width="100%" height="100%"></rect>
+      </svg>
+    </div>
+  </body>
+</html>
