@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <style>
+    .text-circle {
+      fill: red;
+      font-size: 15px;
+    }
+  </style>
+  <body>
+    <svg>
+      <defs>
+        <path
+          id="path-circle"
+          d=" M 100 70 A50 50 0 1 1 200 70 A50 50 0 1 1 100 70 "
+        ></path>
+      </defs>
+
+      <text
+        class="text-circle"
+        x="0"
+        y="0"
+        width="500"
+        height="300"
+        xml:space="preserve"
+      >
+        <textPath xlink:href="#path-circle">
+          fangjun i love you ??? wo li ge da qu
+        </textPath>
+      </text>
+    </svg>
+  </body>
+</html>
