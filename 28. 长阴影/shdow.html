@@ -30,13 +30,33 @@
       color: #06b8ff;
       transition: text-shadow 0.5s;
     }
-    .fangjun:hover {
+    /* .fangjun:hover {
       text-shadow: 2px 2px 0 #d2cfcf, 3px 3px 0 #d2cfcf, 4px 4px 0 #d2cfcf,
         5px 5px 0 #d2cfcf, 6px 6px 0 #d2cfcf, 7px 7px 0 #d2cfcf,
         8px 8px 0 #d2cfcf;
-    }
+    } */
   </style>
   <body>
     <div class="fangjun">fangjun</div>
+    <script src="http://alicdn.herdsric.com/herdsric-tool/jquery.min.js"></script>
+    <script>
+      // js写法
+      $(".fangjun").on("mouseenter", function() {
+        console.log("mouse enter");
+        var shadowstr = "";
+        for (var i = 0; i < 200; i++) {
+          if (i != 0) {
+            shadowstr += ",";
+          }
+          shadowstr += 2 + i / 2 + "px " + (2 + i / 2) + "px 0 #d2cfcf";
+        }
+
+        $(".fangjun").css({ textShadow: shadowstr });
+      });
+      $(".fangjun").on("mouseleave", function() {
+        console.log("mouse leave");
+        $(".fangjun").css({ textShadow: "" });
+      });
+    </script>
   </body>
 </html>
