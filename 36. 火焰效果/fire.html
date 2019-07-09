@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+        align-items: center;
+      }
+      .fangjun {
+        position: relative;
+        /* height: 100px; */
+        /* display: flex; */
+        text-align: center;
+        font-size: 50px;
+        color: #06b8ff;
+      }
+      .fire {
+        width: 0px;
+        height: 0px;
+        position: absolute;
+        bottom: 0;
+        background-image: radial-gradient(#ff5000 20%, rgba(255, 80, 0, 0) 70%);
+        border-radius: 50%;
+        animation: fireAni 1s linear infinite;
+        transition: width 2s, height 2s;
+      }
+      @keyframes fireAni {
+        0% {
+          transform: scale(1);
+          opacity: 0;
+          bottom: 0;
+        }
+
+        25% {
+          opacity: 1;
+        }
+
+        100% {
+          transform: scale(0);
+          opacity: 0;
+          bottom: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="website">
+      <div class="fangjun">
+        fangjun
+        <div class="fireLine">
+          <div class="fire"></div>
+        </div>
+      </div>
+    </div>
+    <script src="http://alicdn.herdsric.com/herdsric-tool/jquery.min.js"></script>
+    <script>
+      var fireClone = $(".fire");
+      var fireLine = $(".fireLine");
+      var bunchOfFire = 5;
+      for (var i = 0; i < bunchOfFire; i++) {
+        var praticleCount = Math.ceil(Math.random() * 10);
+        var positionX = Math.ceil(Math.random() * 100);
+        for (var j = 0; j < praticleCount; j++) {
+          addNewPraticle(positionX);
+          // fireLine.append(fireClone.clone());
+        }
+      }
+
+      function addNewPraticle(position) {
+        var ele = fireClone.clone();
+        var whichPartOf = Math.random() > 0.7 ? 10 : 3;
+        var xPosition = position + whichPartOf * Math.random();
+        ele.css({ left: xPosition + "%", animationDelay: Math.random() + "s" });
+        fireLine.append(ele);
+      }
+      var canfire = false;
+
+      setTimeout(() => {
+        var fireLength = 20;
+        $(".fire").css({ width: fireLength + "px", height: fireLength + "px" });
+      }, 2000);
+      $("body").click(function() {
+        var fireLength;
+        if (!canfire) {
+          fireLength = 20;
+        } else {
+          fireLength = 0;
+        }
+        $(".fire").css({ width: fireLength + "px", height: fireLength + "px" });
+        canfire = !canfire;
+      });
+    </script>
+  </body>
+</html>
