@@ -13,12 +13,25 @@
     }
   </style>
   <body>
-    <svg>
+    <svg x="0px" y="0px" viewBox="0 0 640 480" xml:space="preserve">
       <defs>
         <path
           id="path-circle"
           d=" M 100 70 A50 50 0 1 1 200 70 A50 50 0 1 1 100 70 "
-        ></path>
+        >
+          <animate
+            attributeName="d"
+            values="M47.497,179.35h328.814c45.198-128.249,88.136,0,88.136,0
+	h164.972;M12.469,179.35H173.09c45.198-128.249,88.136,0,88.136,0
+	h368.192;M47.497,179.35h328.814c45.198-128.249,88.136,0,88.136,0
+	h164.972"
+            keyTimes="0;0.5;1"
+            begin="infinite"
+            dur="2s"
+            repeatCount="1"
+            fill="freeze"
+          />
+        </path>
       </defs>
 
       <text
@@ -30,9 +43,17 @@
         xml:space="preserve"
       >
         <textPath xlink:href="#path-circle">
-          fangjun i love you ??? wo li ge da qu
+          fangjun i love you ??? wo li ge da qu zhe shi ge shen me dong xi
         </textPath>
       </text>
     </svg>
+    <script src="http://alicdn.herdsric.com/herdsric-tool/jquery.min.js"></script>
+    <script>
+      var $svg = $("svg text");
+      $svg.on("mouseover", function(e) {
+        $pathAni = $("svg defs path animate");
+        $pathAni[0].beginElement();
+      });
+    </script>
   </body>
 </html>
