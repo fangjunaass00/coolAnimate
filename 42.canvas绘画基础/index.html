@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0 user-scalable=no"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        background: #000;
+      }
+    </style>
+    <canvas class="loading"></canvas>
+    <script src="http://alicdn.herdsric.com/herdsric-tool/jquery.min.js"></script>
+    <script>
+      var canvas = document.getElementsByClassName("loading")[0];
+      var context = canvas.getContext("2d");
+      var r = 100;
+      // 外圈圆的宽度
+      var circleThick = 15;
+      var w = (4 * Math.PI) / (3 * r);
+      var fi = 0;
+      var count = 0;
+      var winData = {
+        width: window.innerWidth,
+        height: window.innerHeight
+      };
+      canvas.width = winData.width;
+      canvas.height = winData.height;
+
+      context.lineWidth = 1;
+      var beginPoint = {
+        x: winData.width / 2 - r,
+        y: winData.height / 2 + r
+      };
+
+      function renderFrame() {
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        context.save();
+
+        count++;
+        if (count > 100) {
+          count = 0;
+        }
+        // fi是波浪移动的速度
+        fi += Math.PI / 10;
+        renderArc();
+        setClip();
+        renderWave("rgba(34,167,250,0.9)", w);
+        renderWave("rgba(0,0,255,0.5)", -w);
+        renderText();
+
+        context.restore();
+        requestAnimationFrame(renderFrame);
+      }
+
+      function renderText() {
+        context.save();
+        context.fillStyle = "red";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.font = "30px arial";
+        context.fillText(count + "%", canvas.width / 2, canvas.height / 2);
+        context.restore();
+      }
+
+      function renderArc() {
+        context.save();
+        var angle = (Math.PI * 2 * count) / 100 - Math.PI / 2;
+        context.lineWidth = circleThick;
+        context.strokeStyle = "#22a7f0";
+        context.shadowColor = "rgba(34,167,250,0.9)";
+        context.shadowBlur = count;
+        context.beginPath();
+        context.arc(
+          canvas.width / 2,
+          canvas.height / 2,
+          100,
+          (-1 * Math.PI) / 2,
+          angle,
+          false
+        );
+        context.stroke();
+        context.restore();
+      }
+
+      function renderWave(color, w) {
+        context.beginPath();
+        context.fillStyle = color;
+        context.moveTo(beginPoint.x, beginPoint.y);
+        context.moveTo(beginPoint.x, beginPoint.y - (count / 100) * r);
+        for (var i = 0; i < r * 2; i++) {
+          context.lineTo(
+            beginPoint.x + i,
+            beginPoint.y + Math.sin(w * i + fi) * 10 - (count / 100) * 2 * r
+          );
+        }
+        context.lineTo(beginPoint.x + 2 * r, beginPoint.y + r);
+        context.lineTo(beginPoint.x, beginPoint.y + r);
+        context.closePath();
+        // context.lineTo(winData.width, winData.height);
+        context.fill();
+      }
+
+      //circleThick / 2会让外环紧贴里面的内容，所以稍微分开一点，从距离1/2变为2/3
+
+      function setClip() {
+        context.beginPath();
+        context.arc(
+          canvas.width / 2,
+          canvas.height / 2,
+          r - (circleThick * 2) / 3,
+          0,
+          Math.PI * 2,
+          false
+        );
+        context.clip();
+      }
+      renderFrame();
+    </script>
+  </body>
+</html>

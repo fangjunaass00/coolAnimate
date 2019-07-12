@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+    <canvas id="canvas"></canvas>
+    <script src="http://alicdn.herdsric.com/herdsric-tool/jquery.min.js"></script>
+    <script>
+      var canvas,
+        ctx,
+        R = 80,
+        circleThick = 15,
+        w = (4 * Math.PI) / (3 * R),
+        fiSpeed = Math.PI / 10;
+      fi = 0;
+
+      init();
+      function init() {
+        canvas = document.getElementById("canvas");
+        ctx = canvas.getContext("2d");
+        window.onresize = resize;
+        resize();
+        render();
+      }
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        renderWave();
+        requestAnimationFrame(render);
+      }
+
+      function renderWave() {
+        ctx.save();
+        setCircleClip();
+        fi += fiSpeed;
+        drawWave(6, -w, fi, "rgba(34,167,250,0.9)");
+        drawWave(8, w, fi, "rgba(0,0,255,0.5)");
+        ctx.restore();
+      }
+      function setCircleClip() {
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2, R, 0, Math.PI * 2, false);
+        ctx.clip();
+      }
+      var curValue = 20;
+      function drawWave(a, w, fi, color) {
+        var i, x, y, sx, sy;
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = "black";
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        sx = canvas.width / 2 - R;
+        sy = canvas.height / 2 + R;
+        ctx.moveTo(sx, sy);
+        ctx.lineTo(sx, sy - (curValue / 100) * 2 * R);
+        var yarr = [];
+        for (i = 0; i < R * 2; ++i) {
+          x = sx + i;
+          y = a * Math.sin(w * i + fi) + sy - (curValue / 100) * 2 * R;
+          yarr.push(y);
+          ctx.lineTo(x, y);
+        }
+        console.log((curValue / 100) * 2 * R);
+        ctx.lineTo(sx + 2 * R, sy);
+        ctx.closePath();
+        ctx.fill();
+      }
+    </script>
+  </body>
+</html>
