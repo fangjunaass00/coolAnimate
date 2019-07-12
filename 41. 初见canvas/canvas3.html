@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      body,
+      html {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script src="http://alicdn.herdsric.com/herdsric-tool/jquery.min.js"></script>
+    <script>
+      var circleData;
+      var canvas = document.getElementById("canvas");
+      var context = canvas.getContext("2d");
+      var winData = {
+        width: $("body").width(),
+        height: $("body").height()
+      };
+      canvas.width = winData.width;
+      canvas.height = winData.height;
+      createRoundData();
+      runFrame();
+      function createRoundData() {
+        circleData = {
+          r: 50 + Math.ceil(50 * Math.random()),
+          circlePosx: Math.ceil(canvas.width * Math.random()),
+          circlePosy: Math.ceil(canvas.height * Math.random()),
+          speedX: 2 + Math.ceil(10 * Math.random()),
+          speedY: 2 + Math.ceil(10 * Math.random())
+        };
+      }
+      function runFrame() {
+        if (
+          circleData.circlePosx + circleData.r + circleData.speedX >
+          winData.width
+        ) {
+          circleData.circlePosx = winData.width - circleData.r;
+          circleData.speedX = -circleData.speedX;
+        } else if (
+          circleData.circlePosx - circleData.r + circleData.speedX <
+          0
+        ) {
+          circleData.circlePosx = circleData.r;
+          circleData.speedX = -circleData.speedX;
+        } else {
+          circleData.circlePosx += circleData.speedX;
+        }
+
+        if (
+          circleData.circlePosy + circleData.r + circleData.speedY >
+          winData.height
+        ) {
+          circleData.circlePosy = winData.height - circleData.r;
+          circleData.speedY = -circleData.speedY;
+        } else if (
+          circleData.circlePosy - circleData.r + circleData.speedY <
+          0
+        ) {
+          circleData.circlePosy = circleData.r;
+          circleData.speedY = -circleData.speedY;
+        } else {
+          circleData.circlePosy += circleData.speedY;
+        }
+        context.beginPath();
+        context.arc(
+          circleData.circlePosx,
+          circleData.circlePosy,
+          circleData.r,
+          0,
+          Math.PI * 2,
+          false
+        );
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        context.fillStyle = "rgba(255,100,100,1)";
+        context.fill();
+
+        window.requestAnimationFrame(runFrame);
+      }
+    </script>
+  </body>
+</html>

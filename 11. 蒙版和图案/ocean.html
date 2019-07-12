@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <svg x="0px" y="0px" viewBox="0 0 640 480" xml:space="preserve">
+      <defs>
+        <pattern
+          id="water"
+          x="0"
+          y="0.5"
+          width="0.2"
+          height="3"
+          patternUnits="objectBoundingBox"
+          patternCountentUnits="userSpaceOnUse"
+        >
+          <path
+            style="fill:#15BFFF;stroke:#000000;stroke-miterlimit:10;"
+            d="M1,14c0,0,84.228,3.563,112,0c60.941-7.818,79.93-3.211,138-3
+	c57.277,0.208,73.637,14.033,134,22c36.186,4.776,146-23.539,146-23.539v24.082H1V14z"
+          >
+            <animate
+              attributeName="d"
+              values="
+          M0,14.187c0,0,10.206,6.912,13.813,5.876c3.798-1.091,8.051-12.039,11.982-12.442
+	c5.006-0.514,6.705,12.647,11.694,13.306C41.011,21.392,50,14.187,50,14.187V50H0V14.187z;
+         M0,26c0,0,10.782-12.793,14.389-13.829C18.187,11.08,21.07,28.588,25,28.184
+	c5.006-0.514,7.499-16.155,12.488-15.495C41.011,13.155,50,26,50,26v24H0V26z;
+          M0,14.187c0,0,10.206,6.912,13.813,5.876c3.798-1.091,8.051-12.039,11.982-12.442
+	c5.006-0.514,6.705,12.647,11.694,13.306C41.011,21.392,50,14.187,50,14.187V50H0V14.187z
+                "
+              keyTimes="0;0.5;1"
+              begin="0"
+              dur="1s"
+              calcMode="linear"
+              repeatCount="indefinite"
+            />
+          </path>
+          <!-- <path
+            style="fill:#2AD0FF;stroke:#000000;stroke-miterlimit:10;"
+            d="M1,13c0,0,84.054-1.74,112,0c34.198,2.129,101.735,17,136,17
+	s101.802-14.871,136-17c36.429-2.268,146,0,146,0v20.64L1,40V13z"
+          />
+          <rect
+            x="1"
+            y="34"
+            style="fill:#6AD2FF;stroke:#000000;stroke-miterlimit:10;"
+            width="530"
+            height="173"
+          /> -->
+        </pattern>
+      </defs>
+      <rect x="0" y="0" width="250" height="400" style="fill:url(#water);" />
+    </svg>
+  </body>
+</html>
