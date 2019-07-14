@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <script src="http://alicdn.herdsric.com/herdsric-tool/jquery.min.js"></script>
+    <script>
+        var canvas = document.getElementById("canvas");
+        var context = canvas.getContext("2d");
+        var pointArr = [];
+        var pointCount = 30;
+        var maxLength = 150;
+        var mousePoint = {};
+        var mouseIsRender = false;
+
+        init();
+        function init() {
+            resize();
+            initPoints();
+            createPoint()
+            window.onresize = resize;
+            context.lineWidth = 1;          //设置线宽状态
+            canvas.onmousemove = onmousemove;
+        }
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight
+        }
+        function initPoints() {
+            for (var i = 0; i < pointCount; i++) {
+                createPointPara()
+            }
+        }
+        function createPointPara() {
+            var windowInfo = {
+                width: window.innerWidth,
+                height: window.innerHeight,
+            }
+            var para = {
+                posx: Math.ceil(windowInfo.width * Math.random()),
+                posy: Math.ceil(windowInfo.height * Math.random()),
+                vx: Math.ceil(10 * Math.random()) / 10 - 0.5,
+                vy: Math.ceil(10 * Math.random()) / 10 - 0.5,
+            }
+            if (para.vx < 0) {
+                para.vx -= 0.1
+            } else {
+                para.vx += 0.1
+            }
+            if (para.vy < 0) {
+                para.vy -= 0.1
+            } else {
+                para.vy += 0.1
+            }
+            pointArr.push(para);
+
+        }
+        function createPoint() {
+            var activePoint = [];
+            context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+            // context.save();
+            context.fillStyle = "rgba(255,255,255,0.9)";
+
+            // console.log(pointArr, context.canvas.width, context.canvas.height)
+            pointArr.forEach(function (para) {
+                // 这个begin是必须要的否则上一次渲染的圆不会删除
+
+                if (para.posx + para.vx > window.innerWidth || para.posx + para.vx < 0 || para.posy + para.vy > window.innerHeight || para.posy + para.vy < 0) {
+
+                } else {
+                    if (!!para.vx) {
+                        para.posx += para.vx
+                        para.posy += para.vy
+                        activePoint.push(para);
+                    }
+
+                }
+
+            })
+            pointArr = activePoint;
+            pointArr.push(mousePoint);
+            if (!mouseIsRender) {
+                if (!!mousePoint) {
+                    pointArr.push(mousePoint);
+                    mouseIsRender = true
+                }
+
+            }
+
+
+            if (activePoint.length < pointCount) {
+                createPointPara()
+            }
+
+            pointArr.forEach(function (points) {
+                context.beginPath();
+                context.arc(points.posx, points.posy, 2, 0, Math.PI * 2, false);
+                context.fill();
+            })
+
+            renderLine()
+
+            // context.restore();
+            requestAnimationFrame(createPoint)
+
+        }
+        function renderLine() {
+            for (var i = 0; i < pointArr.length; i++) {
+                for (var j = i + 1; j < pointArr.length; j++) {
+                    checkPointsDistance(pointArr[i].posx, pointArr[i].posy, pointArr[j].posx, pointArr[j].posy)
+                }
+            }
+        }
+        function getDisOf(ball1, ball2) {
+            var dx = Math.abs(ball1.x - ball2.x),
+                dy = Math.abs(ball1.y - ball2.y);
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+        function checkPointsDistance(x, y, x2, y2) {
+            var dis = getDisOf({ x: x, y: y }, { x: x2, y: y2 });
+            if (dis < maxLength) {
+                context.beginPath();
+                context.moveTo(x, y);
+                context.lineTo(x2, y2);
+
+                context.strokeStyle = "rgba(255,255,255," + (1 - Math.ceil(dis * 10 / maxLength) / 10) + ")";  //设置线的颜色状态
+
+                context.stroke();
+                context.closePath();
+            }
+        }
+
+        function onmousemove(e) {
+            mousePoint.posx = e.clientX;
+            mousePoint.posy = e.clientY;
+            // console.log(mousePoint)
+        }
+
+
+    </script>
+</body>
+
+</html>
