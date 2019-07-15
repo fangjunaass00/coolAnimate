@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+  </style>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script src="http://alicdn.herdsric.com/herdsric-tool/jquery.min.js"></script>
+    <script>
+      var canvas = document.getElementById("canvas");
+      var context = canvas.getContext("2d");
+      var windowInfo = {
+        width: window.innerWidth,
+        height: window.innerHeight
+      };
+      var frame = 1000 / 10;
+      var lastTime;
+      init();
+      function init() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        renderFrame();
+      }
+      function renderFrame() {
+        requestAnimationFrame(renderFrame);
+        if (!lastTime) {
+          lastTime = Date.now();
+          return;
+        }
+        var nowTime = Date.now();
+        if (nowTime - lastTime > frame) {
+          context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+          for (var i = 0; i < 10; i++) {
+            createShape();
+          }
+          lastTime = nowTime;
+        }
+      }
+      function createShape() {
+        var getShapeArrLength = Math.floor(4 * Math.random()) + 3;
+        var getPointArr = getShapePoint(getShapeArrLength);
+        getPointArr.sort(sortNumber("deg"));
+
+        context.beginPath();
+        context.moveTo(getPointArr[0].x, getPointArr[0].y);
+
+        for (var i = 1; i < getPointArr.length; i++) {
+          context.lineTo(getPointArr[i].x, getPointArr[i].y);
+        }
+        context.lineTo(getPointArr[0].x, getPointArr[0].y);
+        console.log(getPointArr);
+
+        context.strokeStyle = "rgba(255,255,255,1)"; //设置线的颜色状态
+
+        context.stroke();
+        context.closePath();
+      }
+      function getShapePoint(length) {
+        var newarr = [];
+        var r = getRandomData(100, 200);
+        for (var i = 0; i < length; i++) {
+          var deg = Math.PI * (Math.random() * 2);
+          var obj = {
+            x: r * Math.sin(deg) + windowInfo.width / 2,
+            y: r * Math.cos(deg) + windowInfo.height / 2,
+            deg: deg
+          };
+          newarr.push(obj);
+        }
+        return newarr;
+      }
+      function getRandomData(min, max) {
+        return Math.floor(Math.random() * (max - min)) + min;
+      }
+      function sortNumber(deg) {
+        return function(a, b) {
+          var value = a[deg];
+          var value2 = b[deg];
+          return value - value2;
+        };
+      }
+    </script>
+  </body>
+</html>
