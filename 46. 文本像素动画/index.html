@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+  </style>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script src="http://alicdn.herdsric.com/herdsric-tool/jquery.min.js"></script>
+    <script>
+      var canvas = document.getElementById("canvas");
+      var context = canvas.getContext("2d");
+      var grid = 1;
+      var fontArr = [];
+      var windowInfo = {
+        width: window.innerWidth,
+        height: window.innerHeight
+      };
+      window.onresize = resize;
+      resize();
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        context.fillStyle = "red";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.font = "100px arial";
+        context.fillText("方峻", windowInfo.width / 2, windowInfo.height / 2);
+        // context.restore();
+
+        var data = context.getImageData(
+          0,
+          0,
+          windowInfo.width,
+          windowInfo.height
+        );
+        var buffer32 = new Uint32Array(data.data.buffer);
+        console.log(data.data);
+        console.log(buffer32);
+
+        for (var i = 0; i < windowInfo.height; i += grid) {
+          for (var j = 0; j < windowInfo.width; j += grid) {
+            if (buffer32[j * windowInfo.width + i]) {
+              fontArr.push({ x: i, y: j });
+            }
+          }
+        }
+      }
+
+      createPoint();
+      function createPoint() {
+        var newArr = [];
+        fontArr.forEach(function(item) {
+          newArr.push(createPointData(item.x, item.y));
+        });
+        // fontArr = newArr;
+        renderFrame();
+
+        context.beginPath();
+        context.moveTo(0, 0);
+
+        context.lineTo(437, 300);
+
+        context.strokeStyle = "rgba(255,255,255,1)"; //设置线的颜色状态
+
+        context.stroke();
+        context.closePath();
+      }
+
+      function createPointData(x, y) {
+        var obj = {
+          x: x,
+          y: y,
+          startPosx: x,
+          startPosy: y,
+          speedx: 0 - 0.5 * Math.random(),
+          speedy: 0 - 1 * Math.random(),
+          speedR: 0.2,
+          maxR: getRandom(2, 5),
+          r: 1,
+          g: 0.1
+        };
+        return obj;
+      }
+      var range = 4;
+      function renderFrame() {
+        requestAnimationFrame(renderFrame);
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        context.fillStyle = "rgba(255,255,255,1)";
+        fontArr.forEach(function(item) {
+          context.beginPath();
+
+          // item.x += item.speedx;
+
+          // item.y += item.speedy;
+          // item.speedy += item.g;
+          // if (item.r + item.speedR > item.maxR) {
+          //   item.speedR = -item.speedR;
+          // } else if (item.r + item.speedR < 0) {
+          //   resetEle(item);
+          // } else {
+          //   item.r += item.speedR;
+          // }
+          context.arc(item.x, item.y, 1, 0, Math.PI * 2, false);
+          context.fill();
+        });
+      }
+      function resetEle(item) {
+        item.x = item.startPosx;
+        item.y = item.startPosy;
+        item.speedR = -item.speedR;
+        item.speedy = 1 - 2 * Math.random();
+        item.maxR = getRandom(2, 4);
+      }
+      function getRandom(min, max) {
+        return Math.floor(Math.random() * (max - min)) + min;
+      }
+    </script>
+  </body>
+</html>
