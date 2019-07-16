@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+    #canvas {
+      position: absolute;
+      top: 0;
+    }
+    .liping-canvas {
+      position: absolute;
+      top: 0;
+      display: none;
+    }
+  </style>
+  <body>
+    <canvas id="canvas"></canvas>
+    <canvas class="liping-canvas" width="100" height="100"></canvas>
+    <script src="http://alicdn.herdsric.com/herdsric-tool/jquery.min.js"></script>
+    <script>
+      var canvas = document.getElementById("canvas");
+      var context = canvas.getContext("2d");
+      var wordIndex = 0;
+      var maxLength = 0;
+      var lipingCanvas = $(".liping-canvas")[0];
+      var lipingContext = lipingCanvas.getContext("2d");
+      var firstVisit = true;
+      var fontArr = [];
+      var pointArr = [];
+      var wordList = ["方", "峻", "好", "厉", "害"];
+      var windowInfo = {
+        width: window.innerWidth,
+        height: window.innerHeight
+      };
+
+      function pointClass() {
+        this.state = "spread";
+        this.isRandom = true;
+        this.parameter = {
+          posx: 200,
+          posy: 100,
+          orginx: 200,
+          orginy: 100,
+          targetx: 200,
+          targety: 500,
+          animateTime: 2000,
+          animatedTime: 0
+        };
+        this.update = function(time) {
+          var para = this.parameter;
+
+          if (para.animatedTime > para.animateTime) {
+            if (this.state == "spread") {
+              this.merge();
+            } else if (this.state == "merge") {
+              if (this.isRandom) {
+                console.log("try reset");
+                this.reset({}, true);
+              } else {
+                this.state = "stop";
+              }
+
+              return;
+            }
+            return;
+          } else {
+            para.animatedTime += time;
+          }
+          var percent = para.animatedTime / para.animateTime;
+          var truePercent = easeInOut(percent);
+          para.posx = (para.targetx - para.orginx) * truePercent + para.orginx;
+          para.posy = (para.targety - para.orginy) * truePercent + para.orginy;
+        };
+        this.reset = function(wordPosition, isRandom) {
+          if (isRandom) {
+            this.wordPosition = {
+              x: Math.floor(windowInfo.width * Math.random()),
+              y: Math.floor(windowInfo.height * Math.random())
+            };
+          } else {
+            this.wordPosition = wordPosition;
+          }
+
+          this.isRandom = isRandom;
+          if (!firstVisit) {
+            this.state = "spread";
+            var para = this.parameter;
+
+            para.orginx = para.posx;
+            para.orginy = para.posy;
+            para.targetx = Math.floor(windowInfo.width * Math.random());
+            para.targety = Math.floor(windowInfo.height * Math.random());
+            para.animatedTime = 0;
+          } else {
+            this.merge();
+          }
+        };
+        this.merge = function() {
+          this.state = "merge";
+          var para = this.parameter;
+          var separatePara = this.isRandom ? 1 : 5;
+          para.orginx = para.targetx = para.posx;
+          para.orginy = para.targety = para.posy;
+
+          if (!this.isRandom) {
+            para.targetx =
+              this.wordPosition.x * separatePara +
+              (windowInfo.width - lipingCanvas.width * 5) / 2;
+            para.targety =
+              this.wordPosition.y * separatePara +
+              (windowInfo.height - lipingCanvas.height * 5) / 2;
+          } else {
+            para.targetx = this.wordPosition.x * separatePara;
+            para.targety = this.wordPosition.y * separatePara;
+          }
+          para.animatedTime = 0;
+        };
+        this.init = function() {
+          var para = this.parameter;
+          para.posx = para.orginx = para.targetx = Math.floor(
+            windowInfo.width * Math.random()
+          );
+          para.posy = para.orginy = para.targety = Math.floor(
+            windowInfo.height * Math.random()
+          );
+        };
+      }
+      function changeWord() {
+        lipingContext.clearRect(
+          0,
+          0,
+          lipingContext.canvas.width,
+          lipingContext.canvas.height
+        );
+        lipingContext.fillText(
+          wordList[wordIndex],
+          lipingCanvas.width / 2,
+          lipingCanvas.height / 2
+        );
+
+        var fontData = lipingContext.getImageData(
+          0,
+          0,
+          lipingCanvas.width,
+          lipingCanvas.height
+        );
+        // context.putImageData(fontData, 100, 0);
+        var buffer = new Uint32Array(fontData.data.buffer);
+        var newfontArr = [];
+        for (var i = 0; i < lipingCanvas.height; i++) {
+          for (var j = 0; j < lipingCanvas.width; j++) {
+            if (buffer[i * lipingCanvas.width + j]) {
+              newfontArr.push({ x: j, y: i });
+            }
+          }
+        }
+        if (newfontArr.length > maxLength) {
+          createNewPoint(newfontArr.length - maxLength + 200);
+          maxLength = newfontArr.length;
+        }
+
+        fontArr = newfontArr;
+        resetPoint();
+
+        wordIndex++;
+        if (wordIndex > wordList.length - 1) {
+          wordIndex = 0;
+        }
+      }
+      function init() {
+        resize();
+        initLipingCanvas();
+        changeWord();
+
+        renderFrame();
+        window.onresize = resize;
+        $(canvas).click(function() {
+          firstVisit = false;
+          changeWord();
+        });
+      }
+
+      function initLipingCanvas() {
+        lipingContext.fillStyle = "red";
+        lipingContext.textAlign = "center";
+        lipingContext.textBaseline = "middle";
+        lipingContext.font = "50px arial";
+      }
+      function createNewPoint(number) {
+        for (var i = 0; i < number; i++) {
+          var point = new pointClass();
+          point.init();
+          pointArr.push(point);
+        }
+      }
+
+      function resetPoint() {
+        for (var i = 0; i < fontArr.length; i++) {
+          pointArr[i].reset(fontArr[i], false);
+        }
+
+        for (var j = fontArr.length; j < pointArr.length; j++) {
+          pointArr[j].reset({}, true);
+        }
+      }
+
+      function renderFrame() {
+        requestAnimationFrame(renderFrame);
+        if (!this.lastTime) {
+          this.lastTime = Date.now();
+          return;
+        }
+        var nowTime = Date.now();
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        pointArr.forEach(function(item) {
+          context.beginPath();
+          context.fillStyle = "rgba(255,255,255,1)";
+          context.arc(
+            item.parameter.posx,
+            item.parameter.posy,
+            2,
+            0,
+            Math.PI * 2,
+            false
+          );
+          context.fill();
+          item.update(nowTime - this.lastTime);
+        });
+        lastTime = nowTime;
+      }
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      function easeInOut(time) {
+        if ((time /= 0.5) < 1) {
+          return 0.5 * Math.pow(time, 3);
+        } else {
+          return 0.5 * (Math.pow(time - 2, 3) + 2);
+        }
+      }
+      $(document).ready(function() {
+        init();
+      });
+    </script>
+  </body>
+</html>
