@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+    #sky {
+      position: absolute;
+      top: 0;
+    }
+  </style>
+
+  <body>
+    <canvas class="sky"></canvas>
+    <script src="http://alicdn.herdsric.com/herdsric-tool/jquery.min.js"></script>
+    <script>
+      var canvas = $(".sky")[0];
+      var context = canvas.getContext("2d");
+      var starCount = 600;
+      var windowInfo = {
+        width: window.innerWidth,
+        height: window.innerHeight
+      };
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      function createStar() {}
+
+      $(document).ready(function() {
+        resize();
+      });
+    </script>
+  </body>
+</html>
