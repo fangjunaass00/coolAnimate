@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+    .bg {
+      position: absolute;
+      top: 0;
+    }
+    .sky {
+      position: absolute;
+      top: 0;
+    }
+  </style>
+
+  <body>
+    <!-- <canvas class="star"></canvas> -->
+    <canvas class="bg"></canvas>
+    <canvas class="sky"></canvas>
+    <script src="http://alicdn.herdsric.com/herdsric-tool/jquery.min.js"></script>
+    <script>
+      var starCanvas = $(".star")[0];
+    </script>
+    <script>
+      var canvas = $(".sky")[0];
+
+      var context = canvas.getContext("2d");
+
+      var starCount = 400;
+      var bgstarCount = 100;
+      var pointArr = [];
+      var windowInfo = {
+        width: window.innerWidth,
+        height: window.innerHeight
+      };
+      var canvasInfo = {
+        width: canvas.width,
+        height: canvas.height
+      };
+      var bgcanvas = $(".bg")[0];
+      var bgcontext = bgcanvas.getContext("2d");
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        bgcanvas.width = window.innerWidth;
+        bgcanvas.height = window.innerHeight;
+        canvasInfo.width = window.innerWidth;
+        canvasInfo.height = window.innerHeight;
+      }
+      function createStarBg() {
+        bgcontext.fillStyle = " rgba(255, 255, 255, 1)";
+        for (var i = 0; i < bgstarCount; i++) {
+          bgcontext.beginPath();
+          bgcontext.arc(
+            MathFloor(canvasInfo.width * Math.random()),
+            MathFloor(canvasInfo.height * Math.random()),
+            1,
+            0,
+            Math.PI * 2,
+            false
+          );
+          bgcontext.fill();
+        }
+      }
+      function star() {
+        this.speed = 1;
+        this.step = 0;
+        this.alpha = 0;
+        this.shadowBlur = 10;
+        this.r = 1;
+        this.init = function() {
+          this.originPx = this.posx = MathFloor(
+            canvasInfo.width / 2 + (50 - 100 * Math.random())
+          );
+          this.originPy = this.posy = MathFloor(
+            canvasInfo.height / 2 + (50 - 100 * Math.random())
+          );
+
+          if (this.originPx > canvasInfo.width / 2) {
+          } else {
+            // this.speed = -this.speed;
+          }
+          // this.originPx = 0;
+          // this.originPy = 0;
+        };
+        this.update = function() {
+          this.step += 1;
+          this.speed += 0.009;
+
+          var disx = this.originPx - canvasInfo.width / 2;
+          var disy = this.originPy - canvasInfo.height / 2;
+          this.r += 0.02;
+
+          if (this.shadowBlur < 10) {
+            this.shadowBlur += 0.3;
+          }
+          if (this.alpha < 0.8) {
+            this.alpha += 0.03;
+          }
+          var deg = getAngle(
+            this.originPx,
+            this.originPy,
+            canvasInfo.width / 2,
+            canvasInfo.height / 2
+          );
+          // return;
+          // var deg = Math.atan(disy / disx)
+          // var tan = disx / disy;
+          // console.log(deg);
+
+          this.posx = this.originPx + this.speed * this.step * deg.cos;
+          this.posy = this.originPy + this.speed * this.step * deg.sin;
+        };
+        this.init();
+      }
+      function createStar(count) {
+        context.shadowColor = "rgba(255, 255, 255, 1)"; // 颜色
+        for (var i = 0; i < count; i++) {
+          var staritem = new star();
+          pointArr.push(staritem);
+        }
+      }
+
+      function renderFrame() {
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        var newArr = [];
+        requestAnimationFrame(renderFrame);
+        pointArr.forEach(function(item) {
+          if (
+            item.posx < 0 ||
+            item.posx > canvasInfo.width ||
+            item.posy < 0 ||
+            item.posy > canvasInfo.height
+          ) {
+          } else {
+            item.update();
+            context.beginPath();
+            // context.shadowBlur = item.shadowBlur;
+            context.fillStyle = " rgba(255, 255, 255, " + item.alpha + ")";
+            context.arc(item.posx, item.posy, item.r, 0, Math.PI * 2, false);
+            context.fill();
+            context.beginPath();
+            // context.shadowBlur = item.shadowBlur;
+            context.fillStyle = " rgba(255, 255, 255, " + item.alpha / 2 + ")";
+            context.arc(
+              item.posx,
+              item.posy,
+              item.r * 1.5,
+              0,
+              Math.PI * 2,
+              false
+            );
+            context.fill();
+            newArr.push(item);
+          }
+        });
+
+        pointArr = newArr;
+        if (pointArr.length < starCount) {
+          createStar(starCount - pointArr.length);
+        }
+      }
+      function getAngle(px, py, mx, my) {
+        //获得人物中心和鼠标坐标连线，与y轴正半轴之间的夹角
+        var x = Math.abs(px - mx);
+        var y = Math.abs(py - my);
+        var z = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+        var cos = x / z;
+        var sin = y / z;
+        // var radina = Math.acos(cos); //用反三角函数求弧度
+
+        // var angle = Math.floor(180 / (Math.PI / radina)); //将弧度转换成角度
+        if (px > mx && py > my) {
+        } else if (px < mx && py > my) {
+          cos = -cos;
+        } else if (px < mx && py < my) {
+          sin = -sin;
+          cos = -cos;
+        } else if (px > mx && py < my) {
+          sin = -sin;
+        }
+        return { sin, cos };
+      }
+
+      function MathFloor(num) {
+        return ~~num;
+      }
+
+      $(document).ready(function() {
+        resize();
+        createStarBg();
+        createStar(starCount);
+        renderFrame();
+      });
+    </script>
+  </body>
+</html>
