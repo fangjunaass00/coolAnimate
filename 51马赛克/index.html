@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        background: #000;
+      }
+      #canvas {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script src="http://alicdn.herdsric.com/herdsric-tool/jquery.min.js"></script>
+
+    <script>
+      var canvas = $("#canvas");
+      canvas[0].width = window.innerWidth;
+      canvas[0].height = window.innerHeight;
+      var ctx = canvas[0].getContext("2d");
+
+      var aimg = new Image();
+      aimg.src = "nuannuan.png";
+      aimg.onload = function() {
+        draw(this);
+      };
+
+      function draw(obj) {
+        ctx.drawImage(
+          obj,
+          0,
+          0,
+          window.innerWidth / 2,
+          ((window.innerWidth / 2) * 1790) / 828
+        );
+
+        var oImg = ctx.getImageData(
+          0,
+          0,
+          window.innerWidth / 2,
+          ((window.innerWidth / 2) * 1790) / 828
+        );
+        var w = oImg.width;
+        var h = oImg.height;
+        ctx.putImageData(oImg, w, 0);
+
+        //创建一个新的ImageData对象
+        var newImg = ctx.createImageData(obj.width, obj.height);
+        //马赛克的程度，数字越大越模糊
+        var num = 5;
+        //等分画布
+        var stepW = w / num;
+        var stepH = h / num;
+        //这里是循环画布的像素点
+        for (var i = 0; i < stepH; i++) {
+          for (var j = 0; j < stepW; j++) {
+            //获取一个小方格的随机颜色，这是小方格的随机位置获取的
+            var color = getXY(
+              oImg,
+              j * num + Math.floor(Math.random() * num),
+              i * num + Math.floor(Math.random() * num)
+            );
+            //这里是循环小方格的像素点，
+
+            var count = 0;
+            for (var k = 0; k < num; k++) {
+              for (var l = 0; l < num; l++) {
+                //设置小方格的颜色
+                count++;
+                setXY(newImg, j * num + l, i * num + k, color);
+              }
+            }
+            console.log(count);
+          }
+        }
+        ctx.putImageData(newImg, w, 0);
+      }
+      function getXY(obj, x, y) {
+        var w = obj.width;
+        var h = obj.height;
+        var d = obj.data;
+        var color = [];
+        color[0] = obj.data[4 * (y * w + x)];
+        color[1] = obj.data[4 * (y * w + x) + 1];
+        color[2] = obj.data[4 * (y * w + x) + 2];
+        color[3] = obj.data[4 * (y * w + x) + 3];
+        return color;
+      }
+
+      function setXY(obj, x, y, color) {
+        var w = obj.width;
+        var h = obj.height;
+        var d = obj.data;
+        obj.data[4 * (y * w + x)] = color[0];
+        obj.data[4 * (y * w + x) + 1] = color[1];
+        obj.data[4 * (y * w + x) + 2] = color[2];
+        obj.data[4 * (y * w + x) + 3] = color[3];
+      }
+    </script>
+  </body>
+</html>

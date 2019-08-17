@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        /* background: #000; */
+      }
+
+      .mosi-container {
+        width: 50%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+      }
+      .bg-img {
+        width: 100%;
+        display: block;
+        /* opacity: 0; */
+      }
+      #canvas {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="mosi-container">
+      <img src="show.jpg" class="bg-img" />
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <script src="http://alicdn.herdsric.com/herdsric-tool/jquery.min.js"></script>
+
+    <script>
+      // 图片的宽度，长度和马赛克的宽度
+      var w, h, num;
+
+      // 计数器，随时间增长，到达极限的时候缩回
+      var count = 0;
+
+      // 计数器增加的步长，到达极限后这个值会变为负值
+      var speed = 1;
+      var canvas = $("#canvas");
+      var context = canvas[0].getContext("2d");
+      var canvasInfo = {
+        width: $(".mosi-container").width(),
+        height: $(".mosi-container").height()
+      };
+      // 将图片像素保存在这里
+      var colorArr = [];
+      // 需要渲染的点集合
+      var renderArr = [];
+
+      function initCanvas() {
+        // 自适应canvas大小
+        canvas[0].width = canvasInfo.width;
+        canvas[0].height = canvasInfo.height;
+
+        // 加载图片
+        var aimg = new Image();
+        aimg.src = "show.jpg";
+        aimg.onload = function() {
+          draw(this);
+        };
+      }
+
+      function draw(obj) {
+        context.drawImage(obj, 0, 0, canvasInfo.width, canvasInfo.height);
+
+        var oImg = context.getImageData(
+          0,
+          0,
+          canvasInfo.width,
+          canvasInfo.height
+        );
+        w = oImg.width;
+        h = oImg.height;
+
+        //创建一个新的ImageData对象
+        var newImg = context.createImageData(
+          canvasInfo.width,
+          canvasInfo.height
+        );
+        //马赛克的程度，数字越大越模糊
+        num = 16;
+        //等分画布
+        var stepW = w / num;
+        var stepH = h / num;
+        //这里是循环画布的像素点
+        for (var i = 0; i < stepH; i++) {
+          for (var j = 0; j < stepW; j++) {
+            //获取一个小方格的随机颜色，这是小方格的随机位置获取的
+            var color = getXY(
+              oImg,
+              j * num + Math.floor(Math.random() * num),
+              i * num + Math.floor(Math.random() * num)
+            );
+            //这里是循环小方格的像素点，
+            colorArr.push({ color, i, j, w, num });
+
+            // mosaike(color, i, j, w, num);
+          }
+        }
+        render();
+      }
+      function getXY(obj, x, y) {
+        var w = obj.width;
+        var h = obj.height;
+        var d = obj.data;
+        var color = [];
+        color[0] = obj.data[4 * (y * w + x)];
+        color[1] = obj.data[4 * (y * w + x) + 1];
+        color[2] = obj.data[4 * (y * w + x) + 2];
+        color[3] = obj.data[4 * (y * w + x) + 3];
+        return color;
+      }
+
+      function setXY(obj, x, y, color) {
+        var w = obj.width;
+        var h = obj.height;
+        var d = obj.data;
+        obj.data[4 * (y * w + x)] = color[0];
+        obj.data[4 * (y * w + x) + 1] = color[1];
+        obj.data[4 * (y * w + x) + 2] = color[2];
+        obj.data[4 * (y * w + x) + 3] = color[3];
+      }
+
+      // 画一个马赛克像素点
+      function mosaike(item) {
+        context.beginPath();
+        context.fillStyle =
+          "rgba(" +
+          item.color[0] +
+          "," +
+          item.color[1] +
+          "," +
+          item.color[2] +
+          "," +
+          item.color[3] +
+          ")";
+        context.arc(
+          item.j * item.num,
+          item.i * item.num,
+          num / 2,
+          0,
+          Math.PI * 2,
+          false
+        );
+        context.fill();
+      }
+
+      // 添加一个像素到渲染数组renderArr中
+      function getOneblock(startX, startY) {
+        colorArr.forEach(element => {
+          if (
+            element.i < startX + 1 &&
+            element.i >= startX &&
+            element.j < startY + 1 &&
+            element.j >= startY
+          ) {
+            renderArr.push(element);
+          }
+        });
+      }
+
+      // 将需要渲染的点添加到渲染数组中
+      function getRenderArr() {
+        renderArr = [];
+        for (var i = 0; i < Math.min(count, h / num); i++) {
+          for (var j = 0; j < Math.min(count - i, w / num); j++) {
+            getOneblock(i, j);
+          }
+        }
+      }
+      function render() {
+        count += speed;
+
+        // 计算渲染数组
+        getRenderArr();
+
+        // 清空canvas
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        // 到达极限后，开始负向增长
+        if (count >= (h + w) / num) {
+          speed = -speed;
+        }
+        if (count < 0) {
+        } else {
+          setTimeout(() => {
+            render();
+          }, 100);
+        }
+
+        renderArr.forEach(item => {
+          mosaike(item);
+        });
+      }
+    </script>
+  </body>
+</html>
